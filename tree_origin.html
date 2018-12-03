@@ -1,280 +1,172 @@
+<template>
+    <g></g>
+</template>
 
-<meta charset="UTF-8">
-<style>
-
-.node circle {
-  fill: rgb(90, 228, 14);
-  /* stroke: steelblue; */
-  /* stroke-width: 3px; */
-}
-
-.node text {
-  font: 12px sans-serif;
-}
-
-.link {
-  fill: none;
-  stroke: #ccc;
-  stroke-width: 2px;
-}
-
-</style>
-
-<body>
-  <div class="text-center" id="footer"> <!-- for footer -->
-      <div>
-      </div>
-
-    </div> <!-- end footer -->
-<!-- load the d3.js library -->	
-<script src="https://d3js.org/d3.v5.min.js"></script>
 <script>
+  import * as d3 from 'd3'
+  import {TimelineMax} from 'gsap'
 
-var treeData = {
-      "name": "Science",
-      "children": [
-        { 
-          "name": "Physics",
-          "children": [
-            { "name": "Linear Motion" },
-            { "name": "SUB-CATEGORY",
-              "children": [
-                {"name": "Distance & Displacement"},
-                {"name": "topic"},
-                {"name": "topic"},
-                {"name": "topic"},
-                {"name": "topic"}
-              ]
-            }
-          ]
-        },
-        { 
-          "name": "Biology",
-          "children": [
-            { "name": "SUB-CATEGORY" },
-            { "name": "SUB-CATEGORY",
-              "children": [
-                {"name": "topic"},
-                {"name": "topic"},
-                {"name": "topic"},
-                {"name": "topic"},
-                {"name": "topic"}
-              ]
-            }
-          ]
-        }
-        ,{ 
-          "name": "Chemistry",
-          "children": [
-            { "name": "SUB-CATEGORY" },
-            { "name": "SUB-CATEGORY",
-              "children": [
-                {"name": "topic"},
-                {"name": "topic"},
-                {"name": "topic"},
-                {"name": "topic"},
-                {"name": "topic"}
-              ]
-            }
-          ]
-        },{ 
-          "name": "Mathematics",
-          "children": [
-            { "name": "SUB-CATEGORY" },
-            { "name": "SUB-CATEGORY",
-              "children": [
-                {"name": "topic"},
-                {"name": "topic"},
-                {"name": "topic"},
-                {"name": "topic"},
-                {"name": "topic"}
-              ]
-            }
-          ]
-        }
-      ]
-    };
-
-// Set the dimensions and margins of the diagram
-var margin = {top: 20, right: 90, bottom: 30, left: 90},
-    width = 960 - margin.left - margin.right,
-    height = 500 - margin.top - margin.bottom;
-
-// append the svg object to the body of the page
-// appends a 'group' element to 'svg'
-// moves the 'group' element to the top left margin
-var svg = d3.select("body").append("svg")
-    .attr("width", width + margin.right + margin.left)
-    .attr("height", height + margin.top + margin.bottom)
-  .append("g")
-    .attr("transform", "translate("
-          + margin.left + "," + margin.top + ")");
-
-var i = 0,
-    duration = 750,
-    root;
-
-// declares a tree layout and assigns the size
-var treemap = d3.tree().size([height, width]);
-
-// Assigns parent, children, height, depth
-root = d3.hierarchy(treeData, function(d) { return d.children; });
-root.x0 = height / 2;
-root.y0 = 0;
-
-// Collapse after the second level
-//root.children.forEach(collapse);
-
-update(root);
-
-// Collapse the node and all it's children
-// function collapse(d) {
-//   if(d.children) {
-//     d._children = d.children
-//     d._children.forEach(collapse)
-//     d.children = null
-//   }
-// }
-
-function update(source) {
-
-  // Assigns the x and y position for the nodes
-  var treeData = treemap(root);
-
-  // Compute the new tree layout.
-  var nodes = treeData.descendants(),
-      links = treeData.descendants().slice(1);
-
-  // Normalize for fixed-depth.
-  nodes.forEach(function(d){ d.y = d.depth * 180});
-
-  // ****************** Nodes section ***************************
-
-  // Update the nodes...
-  var node = svg.selectAll('g.node')
-      .data(nodes, function(d) {return d.id || (d.id = ++i); });
-
-  // Enter any new modes at the parent's previous position.
-  var nodeEnter = node.enter().append('g')
-      .attr('class', 'node')
-      .attr("transform", function(d) {
-        return "translate(" + source.y0 + "," + source.x0 + ")";
-    })
-    .on('click', click);
-
-  // Add Circle for the nodes
-  nodeEnter.append('circle')
-      .attr('class', 'node')
-      .attr('r', 1e-6)
-      .style("fill", function(d) {
-          return d._children ? "rgb(90, 228, 14)" : "rgb(90, 228, 14)";
-      });
-
-  // Add labels for the nodes
-  nodeEnter.append('text')
-      .attr("dy", ".35em")
-      .attr("x", function(d) {
-          return d.children || d._children ? -13 : 13;
-      })
-      .attr("text-anchor", function(d) {
-          return d.children || d._children ? "end" : "start";
-      })
-      .text(function(d) { return d.data.name; });
-
-  // UPDATE
-  var nodeUpdate = nodeEnter.merge(node);
-
-  // Transition to the proper position for the node
-  nodeUpdate.transition()
-    .duration(duration)
-    .attr("transform", function(d) { 
-        return "translate(" + d.y + "," + d.x + ")";
-     });
-
-  // Update the node attributes and style
-  nodeUpdate.select('circle.node')
-    .attr('r', 20)
-    .style("fill", function(d) {
-        return d._children ? "rgb(90, 228, 14)" : "rgb(90, 228, 14)";
-    })
-    .attr('cursor', 'pointer');
-
-
-  // Remove any exiting nodes
-  var nodeExit = node.exit().transition()
-      .duration(duration)
-      .attr("transform", function(d) {
-          return "translate(" + source.y + "," + source.x + ")";
-      })
-      .remove();
-
-  // On exit reduce the node circles size to 0
-  nodeExit.select('circle')
-    .attr('r', 1e-6);
-
-  // On exit reduce the opacity of text labels
-  nodeExit.select('text')
-    .style('fill-opacity', 1e-6);
-
-  // ****************** links section ***************************
-
-  // Update the links...
-  var link = svg.selectAll('path.link')
-      .data(links, function(d) { return d.id; });
-
-  // Enter any new links at the parent's previous position.
-  var linkEnter = link.enter().insert('path', "g")
-      .attr("class", "link")
-      .attr('d', function(d){
-        var o = {x: source.x0, y: source.y0}
-        return diagonal(o, o)
-      });
-
-  // UPDATE
-  var linkUpdate = linkEnter.merge(link);
-
-  // Transition back to the parent element position
-  linkUpdate.transition()
-      .duration(duration)
-      .attr('d', function(d){ return diagonal(d, d.parent) });
-
-  // Remove any exiting links
-  var linkExit = link.exit().transition()
-      .duration(duration)
-      .attr('d', function(d) {
-        var o = {x: source.x, y: source.y}
-        return diagonal(o, o)
-      })
-      .remove();
-
-  // Store the old positions for transition.
-  nodes.forEach(function(d){
-    d.x0 = d.x;
-    d.y0 = d.y;
-  });
-
-  // Creates a curved (diagonal) path from parent to the child nodes
-  function diagonal(s, d) {
-
-    path = `M ${s.y} ${s.x}
-            L ${d.y} ${d.x}`
-
-    return path
-  }
-
-  // Toggle children on click.
-  function click(d) {
-    if (d.children) {
-        d._children = d.children;
-        d.children = null;
-      } else {
-        d.children = d._children;
-        d._children = null;
+  export default {
+    name: 'CircleElement',
+    props: ['unique', 'info', 'center'],
+    data: () => ({
+      opt: {
+        radius: 80,
+        angle: 180,
+        distance: 300,
+        url: '',
+        background: '#B4A269',
+        textColor: '#ffffff',
+        text: 'Default Circle Text',
+        fontSize: 19,
+        isLocked: false
       }
-    update(d);
-  }
-}
+    }),
+    watch: {
+      center: {
+        handler: function (newData, oldData) {
+          this.clear()
+          this.setOptions(this.info)
+          if (oldData.x === 0 && oldData.y === 0) {
+            this.drawElement(true)
+          } else {
+            this.drawElement(false)
+          }
+        },
+        deep: true
+      },
+      'info.text': function (newData, oldData) {
+        this.clear()
+        this.setOptions(this.info)
+        if (oldData.x === 0 && oldData.y === 0) {
+          this.drawElement(true)
+        } else {
+          this.drawElement(false)
+        }
+      }
+    },
+    computed: {
+      delta: function () {
+        const angle = (this.option.angle / 180) * Math.PI
+        return {
+          x: (this.option.distance * Math.cos(angle)) + this.center.x,
+          y: (this.option.distance * Math.sin(angle)) + this.center.y
+        }
+      }
+    },
+    mounted () {
+      this.setOptions(this.info)
+      this.drawElement(true)
+    },
+    methods: {
+      setOptions (option) {
+        const that = this
+        this.option = Object.assign({}, that.opt, option)
+      },
+      drawElement (isAnimation) {
+        const opt = this.option
+        const g = d3.select(this.$el)
+          .attr('transform', `translate(${this.delta.x}, ${this.delta.y})`)
+          .attr('cursor', function () {
+            if (opt.isLocked) return 'default'
+            else return 'pointer'
+          })
+          .attr('id', 'g-' + this.unique)
+          .on('mouseover', () => { if (!opt.isLocked) this.circleHighlightOn(g) })
+          .on('mouseout', () => { if (!opt.isLocked) this.circleHighlightOff(g) })
+          .on('click', () => { if (!opt.isLocked) this.$emit('click', opt.url) })
 
+        this.drawPath(g)
+        this.drawCircle(g, opt)
+        this.drawText(g, opt)
+        if (isAnimation) this.animation(this.unique)
+      },
+      drawCircle (ele, opt) {
+        const that = this
+        ele.append('circle')
+          .attr('class', 'circle')
+          .attr('id', 'circle-' + that.unique)
+          .attr('r', opt.radius)
+          .attr('fill', opt.background)
+      },
+      drawText (ele, opt) {
+        const TWidth = 2 * opt.radius * Math.cos(Math.PI / 6)
+        const THeight = 2 * opt.radius * Math.sin(Math.PI / 6)
+        ele.append('g')
+          .attr('class', 'text')
+          .attr('id', 'text-' + this.unique)
+          .attr('transform', 'translate(' + [-(TWidth / 2), -(THeight / 2)] + ')')
+          .append('foreignObject')
+          .attr('width', TWidth)
+          .attr('height', THeight)
+          .append('xhtml:div')
+          .append('xhtml:p')
+          .style('font-size', opt.fontSize + 'px')
+          .style('color', opt.textColor)
+          .html(opt.text)
+        ele.append('g')
+          .attr('class', 'lock')
+          .attr('id', 'lock-' + this.unique)
+          .attr('transform', 'translate(' + [-10, (opt.radius - 40)] + ')')
+          .style('opacity', 1)
+          .append('foreignObject')
+          .attr('width', 24)
+          .attr('height', 24)
+          .append('xhtml:i')
+          .attr('class', 'material-icons')
+          .style('color', opt.textColor)
+          .html(() => {
+            if (opt.isLocked && opt.radius < 180) {
+              return 'lock'
+            }
+          })
+      },
+      drawPath (ele) {
+        ele.append('line')
+          .attr('class', 'line')
+          .attr('id', 'path-' + this.unique)
+          .attr('stroke', '#1D252C')
+          .attr('stroke-width', '2px')
+          .attr('x1', 0)
+          .attr('y1', 0)
+          .attr('x2', this.center.x - this.delta.x)
+          .attr('y2', this.center.y - this.delta.y)
+      },
+      animation (id) {
+        const tl = new TimelineMax()
+        tl.delay(0).from('#circle-' + id, 0.5, {drawSVG: 0})
+          .from('#circle-' + id, 0.5, {'fill': 'none'})
+          .from('#text-' + id, 0.5, {'autoAlpha': 0})
+          .from('#path-' + id, 0.5, {drawSVG: 0})
+
+        const lock = new TimelineMax()
+        lock.delay(1).from('#lock-' + id, 0.5, {'opacity': 0})
+      },
+      circleHighlightOn (ele) {
+        ele.selectAll('circle')
+          .style('filter', 'url(#hoverShadow)')
+      },
+      circleHighlightOff (ele) {
+        ele.selectAll('circle')
+          .style('fill', '#B4A269')
+          .style('filter', '')
+      },
+      clear () {
+        d3.select(this.$el).selectAll('*').remove()
+      }
+    }
+  }
 </script>
 
-</body>
+<style>
+    .text div {
+        width: 100%;
+        height: 100%;
+        display: flex;
+        align-items: center;
+    }
+
+    .text div p {
+        margin: 0 auto;
+    }
+</style>
