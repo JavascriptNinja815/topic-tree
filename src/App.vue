@@ -1,18 +1,18 @@
 <template>
   <div id="app">
-    <img alt="Vue logo" src="./assets/logo.png">
-    <tree/>
+    <topic-tree/>
   </div>
 </template>
 
 <script>
-import tree from './components/tree.vue'
+import TopicTree from './components/tree.vue'
 
 export default {
   name: 'app',
-  components: {
-    tree
-  }
+  components: {TopicTree}
+  // data () {
+  //   return data
+  // }
 }
 </script>
 
