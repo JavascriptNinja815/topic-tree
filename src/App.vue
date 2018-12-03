@@ -24,7 +24,7 @@
             isCollapsed: true,
             hasChild: true,
             children: [{
-              name: 'liner',
+              name: 'Linear Motion ',
               angle: 20,
               isCollapsed: true,
               hasChild: true,
@@ -79,16 +79,17 @@
 
 <style>
     #app {
-        font-family: 'Avenir', Helvetica, Arial, sans-serif;
-        -webkit-font-smoothing: antialiased;
-        -moz-osx-font-smoothing: grayscale;
-        text-align: center;
-        color: #2c3e50;
+      font-family: 'Avenir', Helvetica, Arial, sans-serif;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      text-align: center;
+      width: 100%;
     }
 
     svg {
-        width: 600px;
-        height: 500px;
-        background: grey;
-    }
+      width: 1000px;
+      height: 800px;
+      text-rendering: geometricPrecision;
+      background: #f2f6f4;
+  }
 </style>

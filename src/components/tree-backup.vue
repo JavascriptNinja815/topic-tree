@@ -69,15 +69,6 @@ export default {
       const margin = {top: 20, right: 90, bottom: 30, left: 90}
       const width = 960 - margin.left - margin.right
       const height = 500 - margin.top - margin.bottom
-      //console.log(width) : 780
-      // console.log(height) : 450
-
-      // append the svg object to the body of the page
-      // appends a 'group' element to 'svg'
-      // moves the 'group' element to the top left margin
-      // const svg = d3.select("#topic-tree").append("svg")
-      //     .attr("width", width + margin.right + margin.left)
-      //     .attr("height", height + margin.top + margin.bottom)
 
       const svg = d3.select("#topic-tree").append("svg")
           .attr("class", "svg-container").attr("width", '100%').attr("height", '100%')
@@ -112,9 +103,7 @@ export default {
       const links = treeData.descendants().slice(1);
 
       // Normalize for fixed-depth.
-      let depth = 0
       this.nodes.forEach(function(d){
-        depth = depth + 10
         d.y = d.depth * (100 + depth)
       });
 
