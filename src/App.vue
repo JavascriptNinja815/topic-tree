@@ -20,37 +20,54 @@
         children: [
           {
             name: 'Physics',
-            angle: 90,
+            angle: 270,
             isCollapsed: true,
             hasChild: true,
-            children: [{
-              name: 'Linear Motion ',
-              angle: 20,
-              isCollapsed: true,
-              hasChild: true,
-              children: [{
-                name: 'motion',
-                angle: 40,
+            children: [
+              {
+                name: 'Linear Motion ',
+                angle: 20,
                 isCollapsed: true,
                 hasChild: true,
-                children: [{
-                  name: 'color',
-                  angle: 150,
-                  isCollapsed: true,
-                  hasChild: true
-                }]
-              }]
-            }]
+                children: [
+                  {
+                    name: 'motion',
+                    angle: 40,
+                    isCollapsed: true,
+                    hasChild: true,
+                    children: [
+                        {
+                        name: 'color1',
+                        angle: 150,
+                        isCollapsed: true,
+                        hasChild: false
+                      }
+                    ]
+                  },
+                  {
+                    name: 'SUB-CATEGORY',
+                    angle: 60,
+                    isCollapsed: true,
+                    hasChild: true,
+                    children: [{
+                      name: 'color',
+                      angle: 170,
+                      isCollapsed: true,
+                      hasChild: false
+                    }]
+                  }]
+              }
+            ]
           },
           {
-            name: 'Physics',
+            name: 'Geograph',
             angle: 180,
             isCollapsed: true,
             hasChild: true
           },
           {
             name: 'Math',
-            angle: 270,
+            angle: 90,
             isCollapsed: true,
             hasChild: true
           },

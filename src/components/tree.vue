@@ -10,6 +10,16 @@
     props: ['data','initPOS'],
     data: () => ({
       distance: 200,
+      duration: 750,
+      parentText: {
+        x: 20,
+        y: 15
+      },
+      childText: {
+        x: 15,
+        y: 10
+      },
+      fontSize: 20,
       center: {
         x: 500,
         y: 400
@@ -29,8 +39,12 @@
       }
     },
     mounted () {
+      //import data from topics.csv
+      // d3.csv('topics.csv').then(function(data) {
+      //   console.log(data)
+      // })
       this.setData()
-      this.drawElement()
+      this.drawPanel()
     },
     methods: {
       setData () {
@@ -52,23 +66,28 @@
           }
         }
       },
-      drawElement () {
+      drawPanel () {
         const g = d3.select(this.$el)
           .attr('transform', `translate(${ this.center.x }, ${ this.center.y })`)
-          .attr('cursor', function () {
-            return 'pointer'
-          })
+          .attr('cursor', 'pointer')
         this.drawPath(g)
         this.drawCircle(g)
-        // this.drawText(g)
+        this.drawText(g)
       },
       drawPath (ele) {
         const that = this
+        let duration = 0
+        let delay = 0
         ele.selectAll('line')
           .data(that.links, function (d) {
             return d
           })
           .enter().append('line')
+          .transition().duration(function () {
+            duration = that.duration + delay + 250
+            delay = delay + 250
+            return duration
+          })
           .attr('class', 'line')
           .attr('stroke', 'rgb(224, 221, 213)')
           .attr('stroke-width', '2px')
@@ -85,17 +104,25 @@
       },
       drawCircle (ele) {
         const that = this
+        let duration = 0
+        let delay = 0
         ele.selectAll('circle')
           .data(that.nodes, function (d) {
             return d
           })
           .enter().append('circle')
+          .transition().duration(function () {
+            duration = that.duration + delay
+            delay = delay + 250
+            return duration
+          })
           .style('stroke', 'none')
-          .style('fill', 'rgb(90, 228, 14)')
+          .style('fill', 'rgb(142, 224, 0)')
           
           .attr('r', function (d) {
-            if (d.data.angle === null)
+            if (d.data.angle === null) {
               return that.parentR
+            }
             else {
               return that.childR
             }
@@ -116,11 +143,53 @@
               return that.distance * Math.cos(angle)
             }
           })
+      },
+      drawText (ele) {
+        const that = this
+        ele.selectAll('.text')
+          .data(that.nodes, function (d) {
+            return d
+          })
+          .enter().append('g')
+            .attr('transform', function(d) {
+              if (d.data.angle === null) {
+                return `translate(0, 0)`
+              } else {
+                const angle = (d.data.angle / 180) * Math.PI
+                return `translate(${that.distance * Math.sin(angle)},${that.distance * Math.cos(angle)})`
+              }
+            })
+            .attr('class', 'text')
+            .append('foreignObject')
+            .attr('width', function (d) {
+              if (d.data.angel === null) {
+                return that.parentText.x
+              } else {
+                return that.childText.x
+              }
+            })
+            .attr('height', function (d) {
+              if (d.data.angel === null) {
+                return that.parentText.y
+              } else {
+                return that.childText.y
+              }
+            })
+            .append('xhtml:div')
+            .append('xhtml:p')
+            .style('font-size', this.fontSize + 'px')
+            .style('color', 'black')
+            .html(function(d) {
+              return d.data.name
+            })
       }
     }
   }
 </script>
 <style>
-
+  .text div {
+    width: 100%;
+    height: 100%;
+  }
 </style>
 
