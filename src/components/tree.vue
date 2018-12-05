@@ -4,13 +4,17 @@
 
 <script>
   import * as d3 from 'd3'
+  // import {TimelineMax} from 'gsap'
 
   export default {
     name: 'TopicTree',
-    props: ['data','initPOS'],
+    props: ['data'],
     data: () => ({
       distance: 200,
       duration: 750,
+      fontSize: 20,
+      childR: 18,
+      parentR: 30,
       parentText: {
         x: 20,
         y: 15
@@ -19,25 +23,22 @@
         x: 15,
         y: 10
       },
-      fontSize: 20,
       center: {
         x: 500,
         y: 400
       },
-      childR: 18,
-      parentR: 30,
       root: [],
       nodes: [],
       tree: null
     }),
-    watch: {
-      data: {
-        handler: function (newData) {
-          console.log(newData)
-        },
-        deep: true
-      }
-    },
+    // watch: {
+    //   data: {
+    //     handler: function (newData) {
+    //       console.log(newData)
+    //     },
+    //     deep: true
+    //   }
+    // },
     mounted () {
       //import data from topics.csv
       // d3.csv('topics.csv').then(function(data) {
@@ -50,11 +51,17 @@
       setData () {
         this.tree = d3.tree()
         this.root = d3.hierarchy(this.data)
-
         this.root.children.forEach(this.collapse)
-
         const treeData = this.tree(this.root)
         this.nodes = treeData.descendants()
+        this.nodes.forEach(function(d) {
+          if (d.children && d.children.length) {
+            let angle = 360 / d.children.length;
+            d.children.forEach(function(ch, i) {
+              ch.data.angle = 360 - angle * (i + 1);
+            });
+          }
+        });
         this.links = treeData.descendants().slice(1)
       },
       collapse (d) {
@@ -84,12 +91,12 @@
           })
           .enter().append('line')
           .transition().duration(function () {
-            duration = that.duration + delay + 250
+            duration = that.duration + delay + 300
             delay = delay + 250
             return duration
           })
           .attr('class', 'line')
-          .attr('stroke', 'rgb(224, 221, 213)')
+          .attr('stroke', '#e0ddd5')
           .attr('stroke-width', '2px')
           .attr('x1', 0)
           .attr('y1', 0)
@@ -116,9 +123,7 @@
             delay = delay + 250
             return duration
           })
-          .style('stroke', 'none')
-          .style('fill', 'rgb(142, 224, 0)')
-          
+          .attr('class', 'circle')
           .attr('r', function (d) {
             if (d.data.angle === null) {
               return that.parentR
@@ -146,42 +151,34 @@
       },
       drawText (ele) {
         const that = this
-        ele.selectAll('.text')
+        let duration = 0
+        let delay = 0
+        let textDistance = that.distance + 50
+        ele.selectAll('text')
           .data(that.nodes, function (d) {
             return d
           })
-          .enter().append('g')
-            .attr('transform', function(d) {
-              if (d.data.angle === null) {
-                return `translate(0, 0)`
-              } else {
-                const angle = (d.data.angle / 180) * Math.PI
-                return `translate(${that.distance * Math.sin(angle)},${that.distance * Math.cos(angle)})`
-              }
-            })
+          .enter().append('text')
             .attr('class', 'text')
-            .append('foreignObject')
-            .attr('width', function (d) {
-              if (d.data.angel === null) {
-                return that.parentText.x
-              } else {
-                return that.childText.x
-              }
-            })
-            .attr('height', function (d) {
-              if (d.data.angel === null) {
-                return that.parentText.y
-              } else {
-                return that.childText.y
-              }
-            })
-            .append('xhtml:div')
-            .append('xhtml:p')
-            .style('font-size', this.fontSize + 'px')
-            .style('color', 'black')
             .html(function(d) {
-              return d.data.name
-            })
+                return d.data.name
+              })
+            .transition()
+              .style('opacity', '1')
+              .duration(function () {
+                duration = that.duration + delay
+                delay = delay + 250
+                return duration
+              })
+              
+              .attr('transform', function(d) {
+                if (d.data.angle === null) {
+                  return `translate(0, 0)`
+                } else {
+                  const angle = (d.data.angle / 180) * Math.PI
+                  return `translate(${textDistance * Math.sin(angle)},${textDistance * Math.cos(angle)})`
+                }
+              })
       }
     }
   }
@@ -190,6 +187,14 @@
   .text div {
     width: 100%;
     height: 100%;
+  }
+  .text {
+    fill: #434046;
+    opacity: 0;
+  }
+  .circle {
+    stroke: none;
+    fill: #8ee000;
   }
 </style>
 

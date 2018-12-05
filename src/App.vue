@@ -16,29 +16,29 @@
       treeData: {
         name: 'Science',
         angle: null,
-        isCollapsed: true,
+        isCollapsed: false,
         children: [
           {
             name: 'Physics',
-            angle: 270,
+            angle: null,
             isCollapsed: true,
             hasChild: true,
             children: [
               {
                 name: 'Linear Motion ',
-                angle: 20,
+                angle: null,
                 isCollapsed: true,
                 hasChild: true,
                 children: [
                   {
                     name: 'motion',
-                    angle: 40,
+                    angle: null,
                     isCollapsed: true,
                     hasChild: true,
                     children: [
                         {
                         name: 'color1',
-                        angle: 150,
+                        angle: null,
                         isCollapsed: true,
                         hasChild: false
                       }
@@ -46,12 +46,12 @@
                   },
                   {
                     name: 'SUB-CATEGORY',
-                    angle: 60,
+                    angle: null,
                     isCollapsed: true,
                     hasChild: true,
                     children: [{
                       name: 'color',
-                      angle: 170,
+                      angle: null,
                       isCollapsed: true,
                       hasChild: false
                     }]
@@ -60,20 +60,56 @@
             ]
           },
           {
-            name: 'Geograph',
-            angle: 180,
+            name: 'Chemistry',
+            angle: null,
             isCollapsed: true,
             hasChild: true
           },
           {
-            name: 'Math',
-            angle: 90,
+            name: 'Physical Science',
+            angle: null,
             isCollapsed: true,
             hasChild: true
           },
           {
             name: 'Biology',
-            angle: 0,
+            angle: null,
+            isCollapsed: true,
+            hasChild: true
+          },
+          {
+            name: 'Anatomy',
+            angle: null,
+            isCollapsed: true,
+            hasChild: true
+          },
+          {
+            name: 'Physiology',
+            angle: null,
+            isCollapsed: true,
+            hasChild: true
+          },
+          {
+            name: 'Zoology',
+            angle: null,
+            isCollapsed: true,
+            hasChild: true
+          },
+          {
+            name: 'Science',
+            angle: null,
+            isCollapsed: true,
+            hasChild: true
+          },
+          {
+            name: 'Physics - Intermediate',
+            angle: null,
+            isCollapsed: true,
+            hasChild: true
+          },
+          {
+            name: 'Biology',
+            angle: null,
             isCollapsed: true,
             hasChild: true
           }
