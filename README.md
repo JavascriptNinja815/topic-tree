@@ -1,4 +1,4 @@
-# tree
+# tree - Vue, D3.js
 
 ## Project setup
 ```
