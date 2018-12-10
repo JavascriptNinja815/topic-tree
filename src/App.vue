@@ -14,12 +14,13 @@
     components: { TopicTree },
     data: () => ({
       treeData: {
-        name: 'Science',
+        name: 'Parent',
         angle: null,
         isCollapsed: false,
+        hasChild: true,
         children: [
           {
-            name: 'Physics',
+            name: 'child1',
             angle: null,
             isCollapsed: true,
             hasChild: true,
@@ -49,66 +50,105 @@
                     angle: null,
                     isCollapsed: true,
                     hasChild: true,
-                    children: [{
-                      name: 'color',
-                      angle: null,
-                      isCollapsed: true,
-                      hasChild: false
-                    }]
-                  }]
+                    children: [
+                      {
+                        name: 'color',
+                        angle: null,
+                        isCollapsed: true,
+                        hasChild: false
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                name: 'Linear Motion ',
+                angle: null,
+                isCollapsed: true,
+                hasChild: true,
+                children: [
+                  {
+                    name: 'motion',
+                    angle: null,
+                    isCollapsed: true,
+                    hasChild: true,
+                    children: [
+                        {
+                        name: 'color1',
+                        angle: null,
+                        isCollapsed: true,
+                        hasChild: false
+                      }
+                    ]
+                  },
+                  {
+                    name: 'SUB-CATEGORY',
+                    angle: null,
+                    isCollapsed: true,
+                    hasChild: true,
+                    children: [
+                      {
+                        name: 'color',
+                        angle: null,
+                        isCollapsed: true,
+                        hasChild: false
+                      }
+                    ]
+                  }
+                ]
               }
             ]
           },
           {
-            name: 'Chemistry',
+            name: 'child2',
             angle: null,
             isCollapsed: true,
             hasChild: true
           },
           {
-            name: 'Physical Science',
+            name: 'child3',
             angle: null,
             isCollapsed: true,
             hasChild: true
           },
           {
-            name: 'Biology',
+            name: 'child4',
             angle: null,
             isCollapsed: true,
             hasChild: true
           },
           {
-            name: 'Anatomy',
+            name: 'child5',
             angle: null,
             isCollapsed: true,
             hasChild: true
           },
           {
-            name: 'Physiology',
+            name: 'child6',
             angle: null,
             isCollapsed: true,
             hasChild: true
           },
           {
-            name: 'Zoology',
+            name: 'child7',
             angle: null,
             isCollapsed: true,
             hasChild: true
           },
           {
-            name: 'Science',
+            name: 'child8',
             angle: null,
             isCollapsed: true,
             hasChild: true
           },
           {
-            name: 'Physics - Intermediate',
+            name: 'child9',
             angle: null,
             isCollapsed: true,
             hasChild: true
           },
           {
-            name: 'Biology',
+            name: 'child10',
             angle: null,
             isCollapsed: true,
             hasChild: true

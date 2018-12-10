@@ -65,6 +65,7 @@
         this.links = treeData.descendants().slice(1)
       },
       collapse (d) {
+        // console.log
         if (d.children) {
           d._children = d.children
           d._children.forEach(this.collapse)
@@ -73,6 +74,9 @@
           }
         }
       },
+      // click (d) {
+      //   console.log(d);
+      // },
       drawPanel () {
         const g = d3.select(this.$el)
           .attr('transform', `translate(${ this.center.x }, ${ this.center.y })`)
@@ -118,36 +122,39 @@
             return d
           })
           .enter().append('circle')
-          .transition().duration(function () {
-            duration = that.duration + delay
-            delay = delay + 250
-            return duration
-          })
-          .attr('class', 'circle')
-          .attr('r', function (d) {
-            if (d.data.angle === null) {
-              return that.parentR
-            }
-            else {
-              return that.childR
-            }
-          })
-          .attr('cx', function (d) {
-            if (d.data.angle === null) {
-              return 0
-            } else {
-              const angle = (d.data.angle / 180) * Math.PI
-              return that.distance * Math.sin(angle)
-            }
-          })
-          .attr('cy', function (d) {
-            if (d.data.angle === null) {
-              return 0
-            } else {
-              const angle = (d.data.angle / 180) * Math.PI
-              return that.distance * Math.cos(angle)
-            }
-          })
+            .on('click', function (d){
+              that.click(d)
+            })
+            .transition().duration(function () {
+              duration = that.duration + delay
+              delay = delay + 250
+              return duration
+            })
+            .attr('class', 'circle')
+            .attr('r', function (d) {
+              if (d.data.angle === null) {
+                return that.parentR
+              }
+              else {
+                return that.childR
+              }
+            })
+            .attr('cx', function (d) {
+              if (d.data.angle === null) {
+                return 0
+              } else {
+                const angle = (d.data.angle / 180) * Math.PI
+                return that.distance * Math.sin(angle)
+              }
+            })
+            .attr('cy', function (d) {
+              if (d.data.angle === null) {
+                return 0
+              } else {
+                const angle = (d.data.angle / 180) * Math.PI
+                return that.distance * Math.cos(angle)
+              }
+            })
       },
       drawText (ele) {
         const that = this
