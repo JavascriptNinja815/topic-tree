@@ -1,46 +1,60 @@
 <template>
     <div id="app">
-        <svg>
-            <topic-tree :data="treeData"/>
-        </svg>
+      <svg>
+        <topic-tree :data="treeData"/>
+      </svg>
+      <svg>
+        <old-tree :data="treeData"/>
+      </svg>
     </div>
 </template>
 
 <script>
   import TopicTree from './components/tree'
+  import OldTree from './components/tree_origin'
 
   export default {
     name: 'app',
-    components: { TopicTree },
+    components: { TopicTree, OldTree },
     data: () => ({
       treeData: {
-        name: 'Parent',
+        name: 'Science',
         angle: null,
-        isCollapsed: false,
+        cx: 0,
+        cy: 0,
+        isParent: true,
         hasChild: true,
         children: [
           {
-            name: 'child1',
+            name: 'Physics',
             angle: null,
-            isCollapsed: true,
+            cx: 0,
+            cy: 0,
+            isParent: true,
             hasChild: true,
             children: [
               {
-                name: 'Linear Motion ',
+                name: 'Linear Motion 1',
                 angle: null,
-                isCollapsed: true,
+                cx: 0,
+                cy: 0,
+                isParent: true,
                 hasChild: true,
                 children: [
                   {
                     name: 'motion',
                     angle: null,
-                    isCollapsed: true,
+                    cx: 0,
+                    cy: 0,
+                    isParent: true,
                     hasChild: true,
                     children: [
                         {
                         name: 'color1',
                         angle: null,
-                        isCollapsed: true,
+                        cx: 0,
+                        cy: 0,
+                        isParent: true,
                         hasChild: false
                       }
                     ]
@@ -48,109 +62,112 @@
                   {
                     name: 'SUB-CATEGORY',
                     angle: null,
-                    isCollapsed: true,
+                    cx: 0,
+                    cy: 0,
+                    isParent: true,
                     hasChild: true,
                     children: [
                       {
                         name: 'color',
                         angle: null,
-                        isCollapsed: true,
+                        cx: 0,
+                        cy: 0,
+                        isParent: true,
                         hasChild: false
                       }
                     ]
-                  }
-                ]
+                  }]
               },
               {
-                name: 'Linear Motion ',
+                name: 'Linear motion 2',
                 angle: null,
-                isCollapsed: true,
+                cx: 0,
+                cy: 0,
+                isParent: true,
                 hasChild: true,
-                children: [
-                  {
-                    name: 'motion',
-                    angle: null,
-                    isCollapsed: true,
-                    hasChild: true,
-                    children: [
-                        {
-                        name: 'color1',
-                        angle: null,
-                        isCollapsed: true,
-                        hasChild: false
-                      }
-                    ]
-                  },
-                  {
-                    name: 'SUB-CATEGORY',
-                    angle: null,
-                    isCollapsed: true,
-                    hasChild: true,
-                    children: [
-                      {
-                        name: 'color',
-                        angle: null,
-                        isCollapsed: true,
-                        hasChild: false
-                      }
-                    ]
-                  }
-                ]
+                children: null
+              },
+              {
+                name: 'Linear motion 3',
+                angle: null,
+                cx: 0,
+                cy: 0,
+                isParent: true,
+                hasChild: true,
+                children: null
               }
             ]
           },
           {
-            name: 'child2',
+            name: 'Chemistry',
             angle: null,
-            isCollapsed: true,
+            cx: 0,
+            cy: 0,
+            isParent: true,
             hasChild: true
           },
           {
-            name: 'child3',
+            name: 'Physical Science',
             angle: null,
-            isCollapsed: true,
+            cx: 0,
+            cy: 0,
+            isParent: true,
             hasChild: true
           },
           {
-            name: 'child4',
+            name: 'Biology',
             angle: null,
-            isCollapsed: true,
+            cx: 0,
+            cy: 0,
+            isParent: true,
             hasChild: true
           },
           {
-            name: 'child5',
+            name: 'Anatomy',
             angle: null,
-            isCollapsed: true,
+            cx: 0,
+            cy: 0,
+            isParent: true,
             hasChild: true
           },
           {
-            name: 'child6',
+            name: 'Physiology',
             angle: null,
-            isCollapsed: true,
+            cx: 0,
+            cy: 0,
+            isParent: true,
             hasChild: true
           },
           {
-            name: 'child7',
+            name: 'Zoology',
             angle: null,
-            isCollapsed: true,
+            cx: 0,
+            cy: 0,
+            isParent: true,
             hasChild: true
           },
           {
-            name: 'child8',
+            name: 'Science',
             angle: null,
-            isCollapsed: true,
+            cx: 0,
+            cy: 0,
+            isParent: true,
             hasChild: true
           },
           {
-            name: 'child9',
+            name: 'Physics - Intermediate',
             angle: null,
-            isCollapsed: true,
+            cx: 0,
+            cy: 0,
+            isParent: true,
             hasChild: true
           },
           {
-            name: 'child10',
+            name: 'Biology',
             angle: null,
-            isCollapsed: true,
+            cx: 0,
+            cy: 0,
+            isParent: true,
             hasChild: true
           }
         ]
@@ -168,6 +185,9 @@
       // }
     }
   }
+  // export default {
+
+  // }
 </script>
 
 <style>

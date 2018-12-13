@@ -1,5 +1,5 @@
 <template>
-    <g></g>
+  <g></g>
 </template>
 
 <script>
@@ -11,7 +11,7 @@
     props: ['data'],
     data: () => ({
       distance: 200,
-      duration: 750,
+      duration: 1000,
       fontSize: 20,
       childR: 18,
       parentR: 30,
@@ -29,102 +29,64 @@
       },
       root: [],
       nodes: [],
-      tree: null
+      tree: null,
+      panel: null,
+      selectNode: null
     }),
-    // watch: {
-    //   data: {
-    //     handler: function (newData) {
-    //       console.log(newData)
-    //     },
-    //     deep: true
-    //   }
-    // },
     mounted () {
-      //import data from topics.csv
-      // d3.csv('topics.csv').then(function(data) {
-      //   console.log(data)
-      // })
-      this.setData()
-      this.drawPanel()
+      this.draw()
     },
     methods: {
-      setData () {
+      draw () {
         this.tree = d3.tree()
-        this.root = d3.hierarchy(this.data)
+        this.root = d3.hierarchy(this.data, function(d){
+          return d.children
+        })
         this.root.children.forEach(this.collapse)
-        const treeData = this.tree(this.root)
-        this.nodes = treeData.descendants()
+        this.panel = d3.select(this.$el)
+          .attr('transform', `translate(${ this.center.x }, ${ this.center.y })`)
+          .attr('cursor', 'pointer')
+        this.update(this.root)
+      },
+      collapse (d) {
+        if (d.children) {
+          d._children = d.children
+          d._children.forEach(this.collapse)
+            d.children = null
+        }
+      },
+      update (source) {
+        const that = this
+        let duration = 0
+        let delay = 0
+        const treeData = this.tree(source)
+        this.nodes = treeData.descendants()        
+        const links = treeData.descendants().slice(1)
+        //calculate (x, y position using angle)
         this.nodes.forEach(function(d) {
           if (d.children && d.children.length) {
             let angle = 360 / d.children.length;
             d.children.forEach(function(ch, i) {
               ch.data.angle = 360 - angle * (i + 1);
+              // ch.data.cx = that.distance * Math.sin(d.data.angle * Math.PI / 180)
+              // ch.data.cy = that.distance * Math.cos(d.data.angle * Math.PI / 180)
             });
+            
           }
         });
-        this.links = treeData.descendants().slice(1)
-      },
-      collapse (d) {
-        // console.log
-        if (d.children) {
-          d._children = d.children
-          d._children.forEach(this.collapse)
-          if (d.height > 1) {
-            d.children = null
-          }
-        }
-      },
-      // click (d) {
-      //   console.log(d);
-      // },
-      drawPanel () {
-        const g = d3.select(this.$el)
-          .attr('transform', `translate(${ this.center.x }, ${ this.center.y })`)
-          .attr('cursor', 'pointer')
-        this.drawPath(g)
-        this.drawCircle(g)
-        this.drawText(g)
-      },
-      drawPath (ele) {
-        const that = this
-        let duration = 0
-        let delay = 0
-        ele.selectAll('line')
-          .data(that.links, function (d) {
-            return d
-          })
-          .enter().append('line')
-          .transition().duration(function () {
-            duration = that.duration + delay + 300
-            delay = delay + 250
-            return duration
-          })
-          .attr('class', 'line')
-          .attr('stroke', '#e0ddd5')
-          .attr('stroke-width', '2px')
-          .attr('x1', 0)
-          .attr('y1', 0)
-          .attr('x2', function (d) {
-            const angle = (d.data.angle / 180) * Math.PI
-            return that.distance * Math.sin(angle)
-          })
-          .attr('y2', function (d) {
-            const angle = (d.data.angle / 180) * Math.PI
-            return that.distance * Math.cos(angle)
-          })
-      },
-      drawCircle (ele) {
-        const that = this
-        let duration = 0
-        let delay = 0
-        ele.selectAll('circle')
+        console.log(links)
+        this.drawLink(links)
+        const node = this.panel.selectAll('g.node')
           .data(that.nodes, function (d) {
-            return d
+            return d.id || (d.id = ++that.counter)
           })
-          .enter().append('circle')
-            .on('click', function (d){
-              that.click(d)
-            })
+        //draw circle
+        node.enter().append('g')
+          .attr('class', 'node')
+          .append('circle')
+            .on('click', function (d) {
+                return that.nodeClick(d, this)
+              })
             .transition().duration(function () {
               duration = that.duration + delay
               delay = delay + 250
@@ -155,13 +117,75 @@
                 return that.distance * Math.cos(angle)
               }
             })
+          
+          // .on('click', function (d) {
+          //   that.selectNode(d, this)
+          // })
+
+        this.drawText()
       },
-      drawText (ele) {
+      nodeClick (d, ele) {
+        let that = this
+        let duration = 0
+        let delay = 0
+        //move clicked node to other position based on it's angle
+        d3.select(ele).transition().duration(function () {
+          duration = that.duration + delay
+          delay = delay + 250
+          return duration
+        })
+        .attr('transform', function(d) {
+          if (d.data.angle === null) {
+            return `translate(0, 0)`
+          } else {
+            const angle = (d.data.angle / 180) * Math.PI
+            return `translate(${that.distance * 1.5 * Math.sin(angle)},${that.distance * 1.5 * Math.cos(angle)})`
+          }
+        })
+        if (d.children) {
+          d._children = d.children
+          d.children = null
+        } else {
+          d.children = d._children
+          d._children = null;
+        }
+        this.drawLink(d)
+        this.update(d)
+      },
+      drawLink (links) {
+        const that = this
+        let duration = 0
+        let delay = 0
+        this.panel.selectAll('line')
+          .data(links, function (d) {
+            return d
+          })
+          .enter().append('line')
+          .transition().duration(function () {
+            duration = that.duration + delay + 300
+            delay = delay + 250
+            return duration
+          })
+          .attr('class', 'line')
+          .attr('stroke', '#e0ddd5')
+          .attr('stroke-width', '2px')
+          .attr('x1', 0)
+          .attr('y1', 0)
+          .attr('x2', function (d) {
+            const angle = (d.data.angle / 180) * Math.PI
+            return that.distance * Math.sin(angle)
+          })
+          .attr('y2', function (d) {
+            const angle = (d.data.angle / 180) * Math.PI
+            return that.distance * Math.cos(angle)
+          })
+      },
+      drawText () {
         const that = this
         let duration = 0
         let delay = 0
         let textDistance = that.distance + 50
-        ele.selectAll('text')
+        this.panel.selectAll('text')
           .data(that.nodes, function (d) {
             return d
           })
@@ -189,6 +213,7 @@
       }
     }
   }
+
 </script>
 <style>
   .text div {
